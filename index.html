@@ -61,7 +61,29 @@
                 <button class="btn" id="goBtn">LAUNCH BOAT</button>
             </div>
         </div>
+        
+        <div class="pop hide" id="endScreen">
+            <div class="glass-card alert">
+                <span class="chip danger">WRECKED</span>
+                <h2>RACE OVER</h2>
 
+                <div class="start-grid">
+                    <div class="s-tile">
+                        <span class="s-lbl">Max Velocity</span>
+                        <span class="s-val" id="topSpd"> 0 KM/H</span>
+                    </div>
+                    <div class="s-tile">
+                        <span class="s-lbl">Total Run</span>
+                        <span class="s-val" id="totalDst">0 M</span>
+                    </div>
+                    <div class="s-tile">
+                        <span class="s-lbl">Rammed</span>
+                        <span class="s-val" id="totalKills">0</span>
+                    </div>
+                </div>
+                <button class="btn retry" id="resetBtn">RACE AGAIN</button>
+            </div>
+        </div>
         
     </div>
 </body>
