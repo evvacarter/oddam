@@ -160,6 +160,8 @@ window.addEventListener('keyup', (e) => {
 });
 
 function bindTouch(btn, dir) {
+    
+    if(!btn) return;
     const start = (e) => { e.preventDefault(); keys[dir] = true;};
     const end = (e) => { e.preventDefault(); keys[dir] = false; };
     btn.addEventListener('touchStart', start, { passive: false});
@@ -264,5 +266,226 @@ function drawSnakeBoat(x, y, w, h, tilt, oarAngle, hullcol, isPlayer) {
         ctx.moveTo(w * 0.35, offset);
         ctx.lineTo(w * 0.95, offset + oarSwing * 12);
         ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(w * 0.35, offset );
+        ctx.lineTo(w * 0.95, offset + oarSwing * 12);
+        ctx.stroke();
     }
+    ctx.fillStyle = hullCol;
+    ctx.beginPath();
+    ctx.moveTo(0, -h * 0.55);
+    ctx.quadraticCurveTo(w * 0.6, -h * 0.1, w * 0.42, h * 0.48);
+    ctx.quadraticCurveTo(0, h * 0.62, -w * 0.42, h * 0.48);
+    ctx.quadraticCurveTo(-w * 0.6, -h * 0.1, 0, -h * 0.55);
+    ctx.fill();
+
+    ctx.strokeStyle = isPlayer ? '#fbbf24' : '#e2e8f0';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(0, -h * 0.46);
+    ctx.lineTo(0, h * 0.45);
+    ctx.stroke();
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(0, h * 0.44, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
 }
+function drawMine(m) {
+    ctx.save();
+    ctx.translate(m.x, m.y);
+    ctx.strokeStyle = '#042f2e';
+    ctx.lineWidth = 2.5;
+    for(let i = 0; i < 8; i++) {
+        const a = (i * Math.PI) / 4 + m.pulse * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * (m.r + 5), Math.sin(a) * (m.r + 5));
+        ctx.stroke();
+    }
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(0, 0, m.r, 0, Math.PI * 2);
+    ctx.fill();
+    const glow = Math.sin(m.pulse * 6) > 0 ? '#ef4444': '#7f1d1d';
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(0, 0, m.r * 0.42, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
+function update(dt) {
+    speedTimer += dt;
+    if (speedTimer >= 2.5) {
+        speedTimer = 0;
+        speedkmh += 8;
+        if (speedkmh > maxSpd) maxSpd = speedkmh;
+        spdEl.textContent = speedkmh;
+    }
+    const flowSpd = speedkmh * 4.4;
+    dist += (speedkmh * dt) / 2.2;
+    dstEl.textContent = Math.floor(dist);
+    
+    const beatTnterval = Math.max(0.18, 0.52 - speedkmh * 0.0018 );
+    drumTimer += dt;
+    if (drumTimer >= beatTnterval) {
+        drumTimer = 0;
+        playDrum(105 + Math.min(speedkmh * 0.25, 60));
+    }
+    const steerForce = 920;
+    if (keys.left) player.vx -= steerForce * dt;
+    if (keys.right) player.vx += steerForce * dt;
+    player.vx *= Math.pow(0.06, dt);
+    player.x += player.vx * dt;
+    player.tilt = (player.vx / 420) * 0.22;
+    player.oarPhase += dt * (8 + speedkmh * 0.06);
+    const minX = BANK_W + player.w * 0.7;
+    const maxX = W - BANK_W - player.w * 0.7;
+    if (player.x < minX){
+        player.x = minX;
+        player.vx = 0;
+    } else if (player.x > maxX) {
+        player.x = maxX;
+        player.vx = 0;
+    }
+    enemyTimer += dt;
+    const enemyRate = Math.max(0.65, 1.85 - speedkmh * 0.005);
+    if (enemyTimer >= enemyRate) {
+        enemyTimer = 0;
+        spawnEnemy();
+    }
+    minTimer += dt;
+    const minRate = Math.max(0.85, 2.3 - speedkmh * 0.006);
+    if(mineTimer >= mineRate) {
+        mineTimer = 0;
+        spawnMine();
+    }
+    for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.y += (flowSpd * 0.58) * dt;
+        e.x += e.vx * dt;
+
+        if (e.kicked) {
+            e.spin += 9 * dt;
+            if (e.x < BANK_W || e.x > W - BANK_W) {
+                aaddSplash(e.x, e.y, '#14b8a6', 16);
+                enemies.splice(i, 1);
+                continue;
+            }
+        } else {
+            const dx = Math.abs(player.x - e.x);
+            const dy = Math.abs(player.y - e.y);
+            if (dx < (player.w + e.w) * 0.55 && dy < (player.h + e.h) * 0.42) {
+                e.kicked = true;
+                const pushDir = e.x >= player.x ? 1 : -1;
+                e.vx = pushDir * (380 + Math.abs(player.vx) * 0.5);
+                player.vx = -pushDir * 130;
+                kills++;
+                killsEl.textContent = kills;
+                ramBadge.style.transform = 'translateX(-50%) scale(1.18)';
+                setTimeout(() => {
+                    ramBadge.style.transform = 'translateX(-50%) scale(1)';
+                }, 150);
+                shake = 8;
+                playRamSound();
+                addSplash((player.x + e.x) / 2, (player.y + e.y) / 2, '#fbbf24', 15);
+            }
+        }
+        if (e.y > H + 140) enemies.splice(i, 1);
+    }
+    for (let i = mines.length - 1; i >= 0; i--) {
+        const m = mines[i];
+        m.y += flowSpd * 0.78 * dt;
+        m.pulse += dt;
+        const dx = player.x - m.x;
+        const dy = player.y - m.y;
+        if (Math.abs(dx) < player.w * 0.55 + m.r * 0.75 && Math.abs(dy) < player.h * 0.44 + m.r * 0.75) {
+            playBlastSound();
+            addSplash(m.x, m.y, '#ef4444', 28);
+            triggerGameOver();
+            return;
+        }
+        if (m.y > H + 60) mines.splice(i, 1);
+    }
+for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt;
+    if (p.life <= 0) particles.splice(i, 1);
+}
+if (shake > 0) shake = Math.max(0, shake - 28 * dt);
+}
+function render(dt) {
+    ctx.save();
+    if (shake > 0) {
+        ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+    }
+    const flowSpd = speedkmp * 4.4;
+    drawRiver(dt, flowSpd);
+    for (let m of mines) drawMine(m);
+    for (let e of enemies) {
+        drawSnakeBoat(e.x, e.y, e.w, e.h, e.spin, player.oarPhase * 0.8, e.color, false);
+    }
+    drawSnakeBoat(player.x, player.y, player.w, player.h, player.tilt, player.oarPhase, '#042f2e', true);
+    for (let p of particles) {
+        ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.Size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+}
+function loop(timestamp) {
+  if (!running) return;
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+  lastTime = timestamp;
+
+  update(dt);
+  render(dt);
+
+  if (running) requestAnimationFrame(loop);
+}
+
+function startGame() {
+  initAudio();
+  running = true;
+
+  speedKmh = 45;
+  maxSpd = 45;
+  dist = 0;
+  kills = 0;
+  speedTimer = 0;
+  enemyTimer = 0;
+  mineTimer = 0;
+
+  player.x = W / 2;
+  player.vx = 0;
+  player.tilt = 0;
+
+  if (spdEl)spdEl.textContent = speedKmh;
+  if (dstEl) dstEl.textContent = '0';
+  if (killsEl)killsEl.textContent = '0';
+
+  initWorld();
+  if (startScreen) startScreen.classList.add('hide');
+  if (endScreen)endScreen.classList.add('hide');
+
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function triggerGameOver() {
+  running = false;
+  if (topSpdEl) topSpdEl.textContent = maxSpd + ' KM/H';
+  if (totalDstEl) totalDstEl.textContent = Math.floor(dist) + ' M';
+  if (totalKillsEl) totalKillsEl.textContent = kills;
+  if (endScreen) endScreen.classList.remove('hide');
+}
+
+goBtn.addEventListener('click', startGame);
+resetBtn.addEventListener('click', startGame);
+initWorld();
+render(0.016);
