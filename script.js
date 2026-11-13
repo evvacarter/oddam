@@ -317,6 +317,14 @@ function drawMine(m) {
     ctx.fill();
     ctx.restore();
 }
+let bestDist = Number(localStorage.getItem('oddam_best')) || 0;
+const bestScoreEl = document.getElementById('bestScore');
+if (bestScoreEl) bestScoreEl.textContent = bestDist;
+
+let mileShown = false;
+let mileText = '';
+let mileTimer = 0;
+
 function update(dt) {
     speedTimer += dt;
     if (speedTimer >= 3.0) {
@@ -328,6 +336,16 @@ function update(dt) {
     const flowSpd = speedKmh * 4.4;
     dist += (speedKmh * dt) / 2.2;
     dstEl.textContent = Math.floor(dist);
+
+    if (dist >= 100 && !mileShown) {
+        mileShown = true;
+        mileText = '100m Mile archived!';
+        mileTimer = 2.0;
+        console.log("100 mile done!")
+    }
+    if (mileTimer > 0) {
+        mileTimer -= dt;
+    }
     
     const beatTnterval = Math.max(0.18, 0.52 - speedKmh * 0.0018 );
     drumTimer += dt;
@@ -440,6 +458,18 @@ function render(dt) {
         ctx.fill();
     }
     ctx.globalAlpha = 1;
+    if (mileTimer > 0) {
+        ctx.save();
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(W - 160, 115, 150, 32);
+        ctx.strokeStyle = '#042f2e';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(W - 160, 115, 150, 32);
+        ctx.fillStyle = '#042f2e';
+        ctx.font = 'bold 13px "chakra petch", sans-serif';
+        ctx.fillText('mile maker', W - 150, 136);
+        ctx.restore();
+    }
     ctx.restore();
 }
 function loop(timestamp) {
@@ -465,6 +495,10 @@ function startGame() {
   speedTimer = 0;
   enemyTimer = 0;
   mineTimer = 0;
+
+  mileShown = false;
+  mileTimer = 0;
+  mileText = '';
 
   player.x = W / 2;
   player.vx = 0;
