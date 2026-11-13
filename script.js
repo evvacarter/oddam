@@ -100,8 +100,8 @@ const BANK_W = 44;
 let running = false;
 let lastTime = 0;
 
-let speedKmh = 45;
-let maxSpd = 45;
+let speedKmh = 42;
+let maxSpd = 42;
 let dist = 0;
 let kills = 0;
 
@@ -152,6 +152,9 @@ function initWorld() {
 window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+    if (e.key === ' ' && !running) {
+        startGame();
+    }
 });
 
 window.addEventListener('keyup', (e) => {
@@ -271,7 +274,7 @@ function drawSnakeBoat(x, y, w, h, tilt, oarAngle, hullcol, isPlayer) {
         ctx.lineTo(w * 0.95, offset + oarSwing * 12);
         ctx.stroke();
     }
-    ctx.fillStyle = hullCol;
+    ctx.fillStyle = hullcol;
     ctx.beginPath();
     ctx.moveTo(0, -h * 0.55);
     ctx.quadraticCurveTo(w * 0.6, -h * 0.1, w * 0.42, h * 0.48);
@@ -316,9 +319,9 @@ function drawMine(m) {
 }
 function update(dt) {
     speedTimer += dt;
-    if (speedTimer >= 2.5) {
+    if (speedTimer >= 3.0) {
         speedTimer = 0;
-        speedKmh += 8;
+        speedKmh += 7;
         if (speedKmh > maxSpd) maxSpd = speedKmh;
         spdEl.textContent = speedKmh;
     }
@@ -382,6 +385,7 @@ function update(dt) {
                 player.vx = -pushDir * 130;
                 kills++;
                 killsEl.textContent = kills;
+                console.log("boat kicked! total : ", kills);
                 ramBadge.style.transform = 'translateX(-50%) scale(1.18)';
                 setTimeout(() => {
                     ramBadge.style.transform = 'translateX(-50%) scale(1)';
@@ -452,9 +456,10 @@ function loop(timestamp) {
 function startGame() {
   initAudio();
   running = true;
+  console.log("game started");
 
-  speedKmh = 45;
-  maxSpd = 45;
+  speedKmh = 42;
+  maxSpd = 42;
   dist = 0;
   kills = 0;
   speedTimer = 0;
@@ -479,6 +484,13 @@ function startGame() {
 
 function triggerGameOver() {
   running = false;
+  const finalM = Math.floor(dist);
+  if (finalM > bestDist) {
+    bestDist = finalM;
+    localStorage.setItem('oddam_best', bestDist);
+    if (bestScoreEl) bestScoreEl.textContent = bestDist;
+    console.log("new high score: ", bestDist);
+  }
   if (topSpdEl) topSpdEl.textContent = maxSpd + ' KM/H';
   if (totalDstEl) totalDstEl.textContent = Math.floor(dist) + ' M';
   if (totalKillsEl) totalKillsEl.textContent = kills;

@@ -58,39 +58,44 @@
         <div class="pop" id="startScreen">
             <div class="glass-card">
 
-                <span class="chip">VALLAM KALI</span>
-                <h2>ODDAM DRIFT</h2>
-                <p>Pilot your snake boat through turbocharged waters. slam into opponents sideways to knock them out,</p>
-                <p> use the keys A and D to control your boat.</p>
+                <span class="chip">SOUTH INDIAN BOAT RACE</span>
+                <h2>ODDAM</h2>
+                <p> Welcome to the oddam! 
+                   Inspired by kerela's famous boat race , hit the other boats & avoid the mines 
+                </p>
+                <p> WARNING : speed will become dangerous in every 3 seconds.</p>
                 <div class="key-guide">
                     <div class="k-box"><span class="key">A</span><span class="key">D</span></div>
                     <span class="sep">or</span>
                     <div class="k-box"><span class="key"> left </span><span class="key"> right </span> </div>
                 </div>
-                <button class="btn" id="goBtn">LAUNCH BOAT</button>
+                <button class="btn" id="goBtn">START GAME</button>
+                <small style="font-size: 11px; opacity: 0.8; margin-top: 4px; display: block;">
+                    best distance : <b id="bestScore">0</b>m // made by evva
+                </small>
             </div>
         </div>
         
         <div class="pop hide" id="endScreen">
             <div class="glass-card alert">
-                <span class="chip danger">WRECKED</span>
-                <h2>RACE OVER</h2>
+                <span class="chip danger">BOAT CRASHED</span>
+                <h2>GAME OVER</h2>
 
                 <div class="stat-grid">
                     <div class="s-tile">
-                        <span class="s-lbl">Max Velocity</span>
+                        <span class="s-lbl">TOP Velocity</span>
                         <span class="s-val" id="topSpd"> 0 KM/H</span>
                     </div>
                     <div class="s-tile">
-                        <span class="s-lbl">Total Run</span>
+                        <span class="s-lbl">DISTANCE</span>
                         <span class="s-val" id="totalDst">0 M</span>
                     </div>
                     <div class="s-tile">
-                        <span class="s-lbl">Rammed</span>
+                        <span class="s-lbl">KICKED</span>
                         <span class="s-val" id="totalKills">0</span>
                     </div>
                 </div>
-                <button class="btn retry" id="resetBtn">RACE AGAIN</button>
+                <button class="btn retry" id="resetBtn">PLAY AGAIN</button>
             </div>
         </div> 
     </div>
