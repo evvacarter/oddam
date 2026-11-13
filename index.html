@@ -10,11 +10,11 @@
 <body>
     <div class="wrap">
         <header class="hud">
-            <div class="hud-box">
-                <span class="tag">speed</span>
-                <div class="num-row">
-                    <span id="spd" class="val">40</span>
-                    <span class="unit">KM/h</span>
+            <div class="panel">
+                <span class="label">speed</span>
+                <div class="data-row">
+                    <span id="spd" class="num">40</span>
+                    <span class="dim">KM/h</span>
                 </div>
             </div>
 
@@ -22,6 +22,7 @@
                 <h1 class="logo">ODDAM</h1>
                 <span class="sub">BOAT RACER'S</span>
             </div>
+
             <div class="panel">
                 <span class="label">distance</span>
                 <div class="data-row">
@@ -31,7 +32,7 @@
             </div>
         </header>
 
-        <div class="ram-badge" id="rambadge">
+        <div class="ram-badge" id="ramBadge">
             <span class="icon">*</span>
             <span class="txt"><span id="kills">0</span> boats eliminated</span>
         </div>
@@ -43,6 +44,12 @@
         <div class="touch-row">
             <button class="t-btn" id="lBtn" aria-label="Steer Left">
                 <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <button class="t-btn" id="rBtn" aria-label="Steer Right">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
             </button>
@@ -50,6 +57,7 @@
 
         <div class="pop" id="startScreen">
             <div class="glass-card">
+
                 <span class="chip">VALLAM KALI</span>
                 <h2>ODDAM DRIFT</h2>
                 <p>Pilot your snake boat through turbocharged waters. slam into opponents sideways to knock them out,</p>
@@ -68,7 +76,7 @@
                 <span class="chip danger">WRECKED</span>
                 <h2>RACE OVER</h2>
 
-                <div class="start-grid">
+                <div class="stat-grid">
                     <div class="s-tile">
                         <span class="s-lbl">Max Velocity</span>
                         <span class="s-val" id="topSpd"> 0 KM/H</span>

@@ -9,9 +9,9 @@
     --cyan-950: #042f2e;
 
     --water-light: #e6fffa;
-    --panel-bg: rgba(240, 253, 250, 0.72);
-    --panel-border: rgba(94, 234, 212, 0.45);
-    --shadow-soft: 0 12px 32px -4px rgba(20, 184, 166, 0.15);
+    --panel-bg: #ccfbf1;
+    --panel-border: #042f2e;
+    --shadow-soft: 4px 4px 0px #042f2e;
 
     --font-display: 'Bungee' , cursive;
     --font-mono: 'Chakra Petch', sans-serif;
@@ -43,14 +43,10 @@ html, body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: radial-gradient(circle at 50% 20%, #d5fbf5 0%, var(--cyan-50) 80%); 
+    background: var(--cyan-100); 
 }
 .glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    z-index: 1;
+    display: none;
 }
 .top-glow {
     top: -100px;
@@ -79,12 +75,10 @@ html, body {
 }
 .panel {
     background: var(--panel-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--panel-border);
-    box-shadow: var(--shadow-soft);
-    padding: 8px 12px;
-    border-radius: 12px;
+    border: 2px solid var(--cyan-950);
+    box-shadow: 3px 3px 0px var(--cyan-950);
+    padding: 6px 10px;
+    border-radius: 0px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -117,6 +111,10 @@ html, body {
 }
 .brand {
     text-align: center;
+    background: var(--cyan-300);
+    border: 2px solid var(--cyan-950);
+    padding: 4px 10px;
+    box-shadow: 3px 3px 0px var(--cyan-950);
 }
 .logo {
     font-family: var(--font-display);
@@ -141,18 +139,14 @@ html, body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    -wekit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(45, 212, 191, 0.5);
-    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.12);
-    border-radius: 999px;
+    padding: 4px 12px;
+    background: var(--cyan-200);
+    border: 2px dashed var(--cyan-950);
+    border-radius: 0px;
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--cyan-950);
     z-index: 10;
-    transition: transform 0.15s ease;
 }
 .view {
     position: relative;
@@ -166,7 +160,7 @@ html, body {
     justify-content: center;
     padding: 12px;
 }
-canvas#boaard {
+canvas#board {
     width: 100%;
     height: 100%;
     background: var(--water-light);
@@ -191,18 +185,15 @@ canvas#boaard {
     pointer-events: auto;
     width: 64px;
     height: 64px;
-    border-radius: 50%;
-    border: 1.5px solid var(--panel-border);
-    background: var(--panel-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-soft);
+    border-radius: 0px;
+    border: 2px solid var(--cyan-950);
+    background: var(--cyan-50);
+    box-shadow: 3px 3px 0px var(--cyan-950);
     color: var(--cyan-950);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.08s ease, background-color 0.15s ease;
 }
 .t-btn:active {
     transform: scale(0.92);
@@ -216,52 +207,44 @@ canvas#boaard {
 .pop {
     position: absolute;
     inset: 0;
-    background: rgba(240, 253, 250, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(4, 47, 46, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     z-index: 30;
-    transition: opacity 0.25s ease, visibilty 0.25s ease;
 }
 .pop.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    display: none !important;
 }
 .glass-card {
     width: 100%;
     max-width: 380px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1.5px solid var(--panel-border);
-    box-shadow: 0 20px 48px rgba(17, 94, 89, 0.18);
-    border-radius: 20px;
-    padding: 28px 24px;
-    text-align: center;
+    background: var(--cyan-50);
+    border: 3px solid var(--cyan-950);
+    box-shadow: 8px 8px 0px var(--cyan-950);
+    border-radius: 0px;
+    padding: 22px 18px;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 14px;
+    align-items: flex-start;
+    gap: 12px;
 }
 .chip {
-    font-size: 0.65rem;
-    letter-spacing: 0.12rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08rem;
     font-weight: 700;
-    color: var(--cyan-800);
-    background: var(--cyan-100);
-    border: 1px solid var(--cyan-300);
-    padding: 4px 10px;
-    border-radius: 999px;
+    color: var(--cyan-950);
+    background: var(--cyan-300);
+    border: 2px solid var(--cyan-950);
+    padding: 2px 8px;
+    border-radius: 0px;
     text-transform: uppercase;
 }
 .chip-danger {
-    font-family: var(--font-display);
-    font-size: 1.65rem;
-    font-weight: 800;
-    color: var(--cyan-950);
-    letter-spacing: 0.04em;
+    background: #ef4444;
+    color: #ffffff;
 }
 .glass-card h2 {
     font-family: var(--font-display);
@@ -269,12 +252,19 @@ canvas#boaard {
     font-weight: 800;
     color: var(--cyan-950);
     letter-spacing: 0.04em;
+    border-bottom: 2px solid var(--cyan-950);
+    width: 100%;
+    padding-bottom: 4px;
 }
 .key-guide {
     display: flex;
     align-items: center;
     gap: 10px;
     margin: 6px 0;
+    width: 100%;
+    background: var(--cyan-100);
+    border: 2px dashed var(--cyan-800);
+    padding: 8px;
 }
 .k-box {
     display: flex;
@@ -282,43 +272,44 @@ canvas#boaard {
 }
 .key {
     display: inline-block;
-    padding: 6px 12px;
+    padding: 4px 10px;
     background: var(--cyan-50);
-    border: 1.5px solid var(--cyan-300);
-    border-radius: 8px;
+    border: 2px solid var(--cyan-950);
+    border-radius: 0px;
     font-weight: 700;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--cyan-950);
-    box-shadow: 0 2px 0 var(--cyan-400);
+    box-shadow: 2px 2px 0 var(--cyan-950);
 }
 .sep {
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--cyan-400);
+    color: var(--cyan-800);
 }
 .btn {
     width: 100%;
-    padding: 14px 20px;
-    border-radius: 12px;
-    border: none;
-    background: linear-gradient(135deg, var(--cyan-400), var(--cyan-500));
-    color: #ffffff;
+    padding: 12px 16px;
+    border-radius: 0px;
+    border: 3px solid var(--cyan-950);
+    background: var(--cyan-400);
+    color: var(--cyan-950);
     font-family: var(--font-display);
     font-size: 0.95rem;
     font-weight: 800;
     letter-spacing: 0.05em;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.32);
-    transition: transform 0.1s ease, filter 0.15 ease;
+    box-shadow: 4px 4px 0px var(--cyan-950);
 }
 .btn:hover {
-    filter: brightness(1.05);
+    background: var(--cyan-300);
 }
 .btn:active {
-    transform: scale(0.98);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--cyan-950);
 }
 .btn.retry {
-    background: linear-gradient(135deg, #0f766e, var(--cyan-950));
+    background: var(--cyan-500);
+    color: #ffffff;
 }
 .stat-grid {
     width: 100%;
@@ -328,10 +319,10 @@ canvas#boaard {
     margin: 4px 0 8px;
 }
 .s-tile {
-    background: var(--cyan-50);
-    border: 1px solid var(--cyan-200);
-    border-radius: 10px;
-    padding: 10px 6px;
+    background: var(--cyan-100);
+    border: 2px solid var(--cyan-950);
+    border-radius: 0px;
+    padding: 8px 6px;
     display: flex;
     flex-direction: column;
     gap: 2px;
